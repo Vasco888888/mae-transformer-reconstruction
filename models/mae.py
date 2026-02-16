@@ -5,7 +5,7 @@ def patchify(imgs, p=16):
   """
   Logically divide the image into patches and flatten them
   Input: (n, 3, h, w)
-  Output: (n, num_patches, 768)
+  Output: (n, num_patches, dim)
   """
 
   n, c, h, w = imgs.shape
@@ -25,10 +25,10 @@ def patchify(imgs, p=16):
 def unpatchify(x, p=16):
   """
   Reconstruct the image from patches
-  Input: (n, num_patches, 768)
+  Input: (n, num_patches, dim)
   Output: (n, 3, h, w)
   """
-  
+
   h_p = w_p = int(x.shape[1]**0.5)
   n = x.shape[0]
 
@@ -41,3 +41,31 @@ def unpatchify(x, p=16):
   # Merge patches back into an image
   imgs = x.reshape(shape=(n, 3, h_p * p, w_p * p))
   return imgs
+
+def random_masking(x, mask_ratio=0.75):
+  """
+  Randomly hides patches based on mask_ratio
+  Input: (n, num_patches, dim)
+  Output: (n, num_patches_kept, dim), mask, ids_restore
+  """
+
+  n, num_patches, dim = x.shape # Batch, Num_patches, Dim
+  len_keep = int(num_patches * (1 - mask_ratio))
+
+  # Generate random noise for each patch
+  noise = torch.rand((n, num_patches), device=x.device)
+
+  # Sort noise to get random indices
+  ids_shuffle = torch.argsort(noise, dim=1)
+  ids_restore = torch.argsort(ids_shuffle, dim=1)
+  
+  # Select the 25% of patches to keep
+  ids_keep = ids_shuffle[:, :len_keep]
+  x_masked = torch.gather(x, dim=1, index=ids_keep.unsqueeze(-1).repeat(1, 1, dim))
+
+  # Generate a binary mask for visualization (0=keep, 1=remove)
+  mask = torch.ones((n, num_patches), device=x.device)
+  mask[:, :len_keep] = 0
+  mask = torch.gather(mask, dim=1, index=ids_restore)
+
+  return x_masked, mask, ids_restore
