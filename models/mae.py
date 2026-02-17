@@ -58,7 +58,7 @@ def random_masking(x, mask_ratio=0.75):
   # Sort noise to get random indices
   ids_shuffle = torch.argsort(noise, dim=1)
   ids_restore = torch.argsort(ids_shuffle, dim=1)
-  
+
   # Select the 25% of patches to keep
   ids_keep = ids_shuffle[:, :len_keep]
   x_masked = torch.gather(x, dim=1, index=ids_keep.unsqueeze(-1).repeat(1, 1, dim))
