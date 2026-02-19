@@ -156,3 +156,20 @@ class MaskedAutoencoderViT(nn.Module):
     latent, mask, ids_restore = self.forward_encoder(imgs, mask_ratio)
     pred = self.forward_decoder(latent, ids_restore)
     return pred, mask
+
+  def forward_loss(self, imgs, pred, mask):
+    """
+    imgs: [N, 3, H, W]
+    pred: [N, L, p*p*3]
+    mask: [N, L], 0 is keep, 1 is remove, 
+    """
+    target = patchify(imgs)
+    
+    # Mean Squared Error
+    loss = (pred - target) ** 2
+    loss = loss.mean(dim=-1) # Loss per patch
+
+    # Mean loss on masked patches only
+    loss = (loss * mask).sum() / mask.sum()  
+
+    return loss

@@ -158,6 +158,7 @@ cython_debug/
 # Project Specific
 data/
 test_mae.py
+test_forward_loss.py
 *.pt
 *.pth
 *.weights
