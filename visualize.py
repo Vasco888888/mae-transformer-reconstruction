@@ -22,20 +22,25 @@ def show_image(image, title=''):
 
 def visualize():
   args = Args()
-  args.device = "cpu"  # Usually enough for inference visualization
+  args.train.device = "cpu"  # Usually enough for inference visualization
     
   # Setup Data
   dataset = build_dataset(args)
     
   # Pick an image from dataset (change index to see others)
   img, _ = dataset[0]  
-  img = img.unsqueeze(0).to(args.device)  # Add batch dimension
+  img = img.unsqueeze(0).to(args.train.device)  # Add batch dimension
 
   # Setup Model
   model = MaskedAutoencoderViT(
-    patch_size=16, embed_dim=768, depth=12, num_heads=12,
-    decoder_embed_dim=512, decoder_depth=8, decoder_num_heads=16,
-  ).to(args.device)
+    patch_size=args.model.patch_size, 
+    embed_dim=args.model.embed_dim, 
+    depth=args.model.depth, 
+    num_heads=args.model.num_heads,
+    decoder_embed_dim=args.model.decoder_embed_dim, 
+    decoder_depth=args.model.decoder_depth, 
+    decoder_num_heads=args.model.decoder_num_heads,
+  ).to(args.train.device)
 
   # Note: If you have a trained model, uncomment the following line!
   # model.load_state_dict(torch.load("mae_checkpoint_epoch_10.pth", map_location="cpu"))
@@ -44,7 +49,7 @@ def visualize():
   # Get predictions
   with torch.no_grad():
     # Forward pass (pred contains the reconstructed patches)
-    pred, mask = model(img, mask_ratio=args.mask_ratio)
+    pred, mask = model(img, mask_ratio=args.train.mask_ratio)
         
     # Unpatchify the predictions to an image shape: [B, 3, H, W]
     # pred shape is [B, N, p*p*3]

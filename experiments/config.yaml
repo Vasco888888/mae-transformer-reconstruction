@@ -1,0 +1,21 @@
+model:
+  patch_size: 16
+  embed_dim: 768
+  depth: 12
+  num_heads: 12
+  decoder_embed_dim: 512
+  decoder_depth: 8
+  decoder_num_heads: 16
+
+train:
+  epochs: 50
+  warmup_epochs: 5
+  lr: 1.5e-4
+  min_lr: 0.0
+  weight_decay: 0.05
+  mask_ratio: 0.75
+  device: "cuda"
+
+data:
+  batch_size: 64
+  num_workers: 2
