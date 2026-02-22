@@ -15,6 +15,7 @@ train:
   weight_decay: 0.05
   mask_ratio: 0.75
   device: "cuda"
+  log_dir: "experiments/logs"
 
 data:
   batch_size: 64

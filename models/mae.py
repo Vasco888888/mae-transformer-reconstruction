@@ -107,7 +107,14 @@ class MaskedAutoencoderViT(nn.Module):
     self.decoder_pred = nn.Linear(decoder_embed_dim, patch_size**2 * in_chans, bias=True)    
     # -------------------------------------
 
+    self.patch_size = patch_size
     self.initialize_weights()
+
+  def unpatchify(self, x):
+    return unpatchify(x, self.patch_size)
+
+  def patchify(self, imgs):
+    return patchify(imgs, self.patch_size)
 
   def initialize_weights(self):
     # Initialize positional encodings
@@ -119,7 +126,7 @@ class MaskedAutoencoderViT(nn.Module):
   
   def forward_encoder(self, x, mask_ratio):
     # Flatten image to patches
-    x = patchify(x)
+    x = self.patchify(x)
     # Add positional encoding
     x = x + self.pos_embed
     # Mask 75% of the data
@@ -163,7 +170,7 @@ class MaskedAutoencoderViT(nn.Module):
     pred: [N, L, p*p*3]
     mask: [N, L], 0 is keep, 1 is remove, 
     """
-    target = patchify(imgs)
+    target = self.patchify(imgs)
     
     # Mean Squared Error
     loss = (pred - target) ** 2
