@@ -43,7 +43,7 @@ def visualize():
   ).to(args.train.device)
 
   # Note: If you have a trained model, uncomment the following line!
-  # model.load_state_dict(torch.load("mae_checkpoint_epoch_10.pth", map_location="cpu"))
+  # model.load_state_dict(torch.load("mae_checkpoint_epoch_50.pth", map_location="cpu"))
   model.eval()
 
   # Get predictions
@@ -52,16 +52,14 @@ def visualize():
     pred, mask = model(img, mask_ratio=args.train.mask_ratio)
         
     # Unpatchify the predictions to an image shape: [B, 3, H, W]
-    # pred shape is [B, N, p*p*3]
-    rec_img = unpatchify(pred, p=16)
+    rec_img = model.unpatchify(pred)
         
     # Create masked image
     # Mask is 1 for dropped patches, 0 for kept
-    # Expand mask to image dimensions
-    p = 16
+    p = model.patch_size
     h = w = img.shape[2] // p
         
-    # Convert [B, N] mask to [B, 1, H, W]
+    # Convert [B, N] mask to [B, 1, H, w]
     mask_expanded = mask.reshape(img.shape[0], 1, h, w)
     # Scale nearest neighbor to [B, 1, H * p, W * p]
     mask_expanded = torch.nn.functional.interpolate(
@@ -74,7 +72,8 @@ def visualize():
     orig_img = img[0]
         
     # 2. Masked image: gray out the dropped patches
-    mean_val = torch.tensor([-2.11, -2.03, -1.80]).view(3, 1, 1) # Gray after normalization
+    # Normalized gray value
+    mean_val = torch.tensor([-2.11, -2.03, -1.80]).view(3, 1, 1) 
     masked_img = orig_img.clone()
     masked_img = torch.where(mask_expanded[0] == 1, mean_val, masked_img)
         
@@ -90,14 +89,17 @@ def visualize():
     show_image(orig_img, "Original")
     
     plt.subplot(1, 3, 2)
-    show_image(masked_img, "Masked")
+    show_image(masked_img, f"Masked ({int(args.train.mask_ratio*100)}%)")
     
     plt.subplot(1, 3, 3)
     show_image(combined_img, "Reconstruction")
     
     plt.tight_layout()
     plt.savefig("reconstruction_demo.png")
-    print("Saved visualization ato reconstruction_demo.png")
+    print("Saved visualization to reconstruction_demo.png")
+    
+    # Also show it if in a notebook
+    plt.show()
 
 if __name__ == "__main__":
   visualize()
