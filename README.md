@@ -24,11 +24,6 @@ This project demonstrates an end-to-end pipeline for **Self-Supervised Image Rec
     *   **Inference Generalization:** Testing on complex, real-world images (like the Doge meme) to prove the model learned structural semantics (e.g., animal faces) rather than just memorizing training pixels.
     *   **Distribution Shift Analysis:** Analyzing the model's performance mismatch when fed high-frequency (sharp) unmasked patches against its low-frequency (blurry) training bias.
 
-## Project Report
-For a detailed technical analysis regarding MAE architecture choices, loss curves, frequency bias, and visual artifact analysis, please refer to the full report:
-
-**[Project Report (PDF) - COMING SOON]**
-
 ## Tech Stack
 
 ### **Core Pipeline (AI and Deep Learning)**
