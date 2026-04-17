@@ -3,7 +3,7 @@
 ![Python](https://img.shields.io/badge/Python-3.13%2B-blue?style=for-the-badge&logo=python&logoColor=white)
 ![PyTorch](https://img.shields.io/badge/PyTorch-2.0%2B-orange?style=for-the-badge&logo=pytorch&logoColor=white)
 ![License](https://img.shields.io/badge/license-MIT-blue?style=for-the-badge)
-[![Kaggle](https://kaggle.com/static/images/open-in-kaggle.svg)](https://kaggle.com/kernels/welcome?src=https://github.com/Vasco888888/mae-transformer-reconstruction/blob/main/notebooks/training_kaggle.ipynb)
+[![Kaggle](https://kaggle.com/static/images/open-in-kaggle.svg)](https://kaggle.com/kernels/welcome?src=https://github.com/Vasco888888/mae-transformer-reconstruction/blob/master/notebooks/training_kaggle.ipynb)
 
 A complete PyTorch implementation of a **Masked Autoencoder (MAE)** using a Vision Transformer (ViT) backbone. This project demonstrates self-supervised learning by heavily masking input images (at a 75% ratio) during training, and generalizing to reconstruct the missing pixels at various inference ratios (e.g., 25%, 50%, and 75%). It evaluates performance on standard CIFAR-10 benchmarks and tests generalization and distribution shift on out-of-distribution (OOD) images.
 
